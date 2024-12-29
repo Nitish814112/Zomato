@@ -40,6 +40,16 @@ id INT AUTO_INCREMENT PRIMARY KEY,
   FOREIGN KEY (delivery_boy_id) REFERENCES delivery_boys(id)
 `;
 
+const order_itemsSchema=`
+id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT,
+  item_name VARCHAR(255),
+  item_price DECIMAL(10, 2),
+  quantity INT,
+  total_item_amount DECIMAL(10, 2),  -- item_price * quantity
+  FOREIGN KEY (order_id) REFERENCES orders(id)
+`;
+
 
 // Initialize all tables
 const initializeTables = async () => {
@@ -49,6 +59,7 @@ const initializeTables = async () => {
     await initializeTable('restaurants',restaurantSchema);
     await initializeTable('customers',customerSchema);
     await initializeTable('orders',orderSchema)
+    await initializeTable('order_items',order_itemsSchema)
    
     
     console.log('All tables created successfully!');
