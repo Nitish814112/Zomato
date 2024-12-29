@@ -8,7 +8,7 @@ const deliveryBoysSchema = `
   email VARCHAR(255) UNIQUE,
   status ENUM('active', 'inactive', 'on_leave') NOT NULL DEFAULT 'active'
 `;
-
+// Restaurant table schema
 const restaurantSchema=`
 id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -16,7 +16,7 @@ id INT AUTO_INCREMENT PRIMARY KEY,
     phone VARCHAR(15),
     email VARCHAR(255) UNIQUE
 `;
-
+// Customer table schema
 const customerSchema=`
 id INT AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(255) NOT NULL,
@@ -24,20 +24,48 @@ email VARCHAR(255) UNIQUE,
 phone VARCHAR(15),
 address VARCHAR(255)
 `;
+// Orders table schema
+const orderSchema=`
+id INT AUTO_INCREMENT PRIMARY KEY,
+  order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  customer_id INT,
+  restaurant_id INT,
+  delivery_boy_id INT,
+  status ENUM('pending', 'completed', 'cancelled') DEFAULT 'pending',
+  total_amount DECIMAL(10, 2) DEFAULT 0.00,
+  is_delivery BOOLEAN DEFAULT TRUE,
+  delivery_status ENUM('pending', 'out_for_delivery', 'delivered') DEFAULT 'pending',
+  FOREIGN KEY (customer_id) REFERENCES customers(id),
+  FOREIGN KEY (restaurant_id) REFERENCES restaurants(id),
+  FOREIGN KEY (delivery_boy_id) REFERENCES delivery_boys(id)
+`;
+
+const order_itemsSchema=`
+id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT,
+  item_name VARCHAR(255),
+  item_price DECIMAL(10, 2),
+  quantity INT,
+  total_item_amount DECIMAL(10, 2),  -- item_price * quantity
+  FOREIGN KEY (order_id) REFERENCES orders(id)
+`;
+
 
 // Initialize all tables
 const initializeTables = async () => {
   try {
     console.log('Creating tables...');
     await initializeTable('delivery_boys', deliveryBoysSchema);
-    await initializeTable('restaurant',restaurantSchema);
-    await initializeTable('customer',customerSchema);
-    // Add similar calls for other tables
-    // await initializeTable('another_table', anotherTableSchema);
+    await initializeTable('restaurants',restaurantSchema);
+    await initializeTable('customers',customerSchema);
+    await initializeTable('orders',orderSchema)
+    await initializeTable('order_items',order_itemsSchema)
+   
+    
     console.log('All tables created successfully!');
   } catch (err) {
     console.error('Error during table initialization:', err.message);
-    throw err; // Ensure that initialization failure stops the app
+    throw err; 
   }
 };
 
