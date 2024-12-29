@@ -17,12 +17,21 @@ id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) UNIQUE
 `;
 
+const customerSchema=`
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL,
+email VARCHAR(255) UNIQUE,
+phone VARCHAR(15),
+address VARCHAR(255)
+`;
+
 // Initialize all tables
 const initializeTables = async () => {
   try {
     console.log('Creating tables...');
     await initializeTable('delivery_boys', deliveryBoysSchema);
     await initializeTable('restaurant',restaurantSchema);
+    await initializeTable('customer',customerSchema);
     // Add similar calls for other tables
     // await initializeTable('another_table', anotherTableSchema);
     console.log('All tables created successfully!');
