@@ -11,7 +11,7 @@ const restaurants =  [
     { "id": 9, "name": "BBQ Masters", "location": "606 Oak Street, City, Country" },
     { "id": 10, "name": "Smoothie Delight", "location": "707 Cherry Boulevard, City, Country" }
   ];
-
+// customer dummy data
   const customers = [
     { "id": 1, "name": "John Doe", "email": "john@example.com", "phone": "1234567890", "delivery_address": "123 Elm Street, City, Country" },
     { "id": 2, "name": "Jane Smith", "email": "jane@example.com", "phone": "2345678901", "delivery_address": "456 Oak Avenue, City, Country" },
@@ -24,5 +24,19 @@ const restaurants =  [
     { "id": 9, "name": "Grace Yellow", "email": "grace@example.com", "phone": "9012345678", "delivery_address": "606 Pine Lane, City, Country" },
     { "id": 10, "name": "Hank Violet", "email": "hank@example.com", "phone": "0123456789", "delivery_address": "707 Oak Boulevard, City, Country" }
   ];
+//deliver-boys dummy data
+  const deliveryBoys =[
+    { "id": 1, "name": "Sam Green", "contact": "1234567890" },
+    { "id": 2, "name": "Mike Blue", "contact": "2345678901" },
+    { "id": 3, "name": "Tom Red", "contact": "3456789012" },
+    { "id": 4, "name": "Nick Yellow", "contact": "4567890123" },
+    { "id": 5, "name": "Leo Black", "contact": "5678901234" },
+    { "id": 6, "name": "Anna White", "contact": "6789012345" },
+    { "id": 7, "name": "Paul Violet", "contact": "7890123456" },
+    { "id": 8, "name": "Eve Orange", "contact": "8901234567" },
+    { "id": 9, "name": "Lily Pink", "contact": "9012345678" },
+    { "id": 10, "name": "Grace Gray", "contact": "0123456789" }
+  ];
 
-  module.exports={restaurants,customers}
+
+  module.exports={restaurants,customers,deliveryBoys}
