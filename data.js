@@ -37,6 +37,20 @@ const restaurants =  [
     { "id": 9, "name": "Lily Pink", "contact": "9012345678" },
     { "id": 10, "name": "Grace Gray", "contact": "0123456789" }
   ];
+// dummy data for orders
+  const orders = [
+    { "id": 1, "order_date": "2024-12-28 12:30:00", "customer_id": 1, "restaurant_id": 1, "delivery_boy_id": 1, "status": "pending", "total_amount": 30.00, "is_delivery": true, "delivery_status": "pending" },
+    { "id": 2, "order_date": "2024-12-28 13:00:00", "customer_id": 2, "restaurant_id": 2, "delivery_boy_id": 2, "status": "completed", "total_amount": 20.00, "is_delivery": true, "delivery_status": "delivered" },
+    { "id": 3, "order_date": "2024-12-28 14:00:00", "customer_id": 3, "restaurant_id": 3, "delivery_boy_id": 3, "status": "pending", "total_amount": 40.00, "is_delivery": true, "delivery_status": "pending" },
+    { "id": 4, "order_date": "2024-12-28 15:00:00", "customer_id": 4, "restaurant_id": 4, "delivery_boy_id": 4, "status": "pending", "total_amount": 25.00, "is_delivery": true, "delivery_status": "pending" },
+    { "id": 5, "order_date": "2024-12-28 16:00:00", "customer_id": 5, "restaurant_id": 5, "delivery_boy_id": 5, "status": "completed", "total_amount": 35.00, "is_delivery": true, "delivery_status": "delivered" },
+    { "id": 6, "order_date": "2024-12-28 17:00:00", "customer_id": 6, "restaurant_id": 6, "delivery_boy_id": 6, "status": "pending", "total_amount": 50.00, "is_delivery": true, "delivery_status": "pending" },
+    { "id": 7, "order_date": "2024-12-28 18:00:00", "customer_id": 7, "restaurant_id": 7, "delivery_boy_id": 7, "status": "pending", "total_amount": 15.00, "is_delivery": true, "delivery_status": "pending" },
+    { "id": 8, "order_date": "2024-12-28 19:00:00", "customer_id": 8, "restaurant_id": 8, "delivery_boy_id": 8, "status": "completed", "total_amount": 18.00, "is_delivery": true, "delivery_status": "delivered" },
+    { "id": 9, "order_date": "2024-12-28 20:00:00", "customer_id": 9, "restaurant_id": 9, "delivery_boy_id": 9, "status": "pending", "total_amount": 28.00, "is_delivery": true, "delivery_status": "pending" },
+    { "id": 10, "order_date": "2024-12-28 21:00:00", "customer_id": 10, "restaurant_id": 10, "delivery_boy_id": 10, "status": "completed", "total_amount": 22.00, "is_delivery": true, "delivery_status": "delivered" }
+  ];
 
 
-  module.exports={restaurants,customers,deliveryBoys}
+
+  module.exports={restaurants,customers,deliveryBoys,orders}
