@@ -30,7 +30,7 @@ const initializeApp = async () => {
   }
 };
 
-app.get('/', async (req, res) => {
+app.get('/setup', async (req, res) => {
   try {
     await initializeApp();
     res.status(200).send('Tables created successfully!');
