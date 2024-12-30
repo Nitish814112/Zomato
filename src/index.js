@@ -25,6 +25,7 @@ const initializeApp = async () => {
 
     console.log('Creating necessary tables...');
     await initializeTables(pool); // Create all tables
+
     tablesInitialized = true; // Mark tables as initialized
 
     console.log('Tables created successfully.');
@@ -35,15 +36,22 @@ const initializeApp = async () => {
   }
 };
 
-// Initialize tables only once when the app starts
+// Call initializeApp() before starting the server
 initializeApp();
 
 // `/setup` route for checking status (no table creation here)
-app.get('/setup', (req, res) => {
-  if (tablesInitialized) {
-    res.status(200).send('Tables are already created!');
-  } else {
-    res.status(500).send('Tables are not yet created. Please try again later.');
+app.get('/setup', async (req, res) => {
+  try {
+    // Ensure that initialization is completed before responding
+    if (tablesInitialized) {
+      console.log('Tables are already created.');
+      res.status(200).send('Tables are already created!');
+    } else {
+      console.log('Tables are not yet created.');
+      res.status(500).send('Tables are not yet created. Please try again later.');
+    }
+  } catch (err) {
+    res.status(500).send('Error during table creation: ' + err.message);
   }
 });
 
