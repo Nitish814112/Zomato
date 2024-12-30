@@ -13,9 +13,9 @@ app.use(express.json());
 const initializeApp = async () => {
   try {
     console.log('Initializing the database connection...');
-    await connectToDatabase(); // Ensure the database is created and connection is established
+    const pool = await connectToDatabase(); // Ensure the database is created and connection is established
     console.log('Creating necessary tables...');
-    await initializeTables(); // Create all tables
+    await initializeTables(pool); // Create all tables
 
     console.log('Initialization complete.');
 
@@ -31,3 +31,5 @@ const initializeApp = async () => {
 };
 
 initializeApp();
+
+module.exports=app;
