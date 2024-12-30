@@ -9,36 +9,46 @@ dotenv.config(); // Load environment variables
 // Middleware to parse JSON requests
 app.use(express.json());
 
-// Run createDB and initializeTables before starting the server
+// Flag to track if tables are already initialized (set to true once done)
+let tablesInitialized = false;
+
+// Function to initialize the app (ensure tables are created)
 const initializeApp = async () => {
   try {
     console.log('Initializing the database connection...');
-    const pool = await connectToDatabase(); // Ensure the database is created and connection is established
-    console.log('Creating necessary tables...');
-    await initializeTables(pool); // Create all tables
+    const pool = await connectToDatabase(); // Get the connection pool
 
-    console.log('Initialization complete.');
-     pool.end();
-    // Start the server
-    const PORT = process.env.PORT || 8080;
-    app.listen(PORT, () => {
-      console.log(`Server is running on http://localhost:${PORT}`);
-    });
+    console.log('Creating necessary tables...');
+    if (!tablesInitialized) {
+      await initializeTables(pool); // Create all tables
+      tablesInitialized = true; // Set flag to true after initialization
+      console.log('Tables created successfully.');
+    }
+
+    pool.end(); // Close the connection pool after initialization
   } catch (err) {
     console.error('Error during initialization:', err.message);
     process.exit(1); // Exit if initialization fails
   }
 };
 
-app.get('/setup', async (req, res) => {
+// Set up the root route to handle requests and ensure tables are created when accessed
+app.get('/', async (req, res) => {
   try {
-    await initializeApp();
-    res.status(200).send('Tables created successfully!');
+    if (!tablesInitialized) {
+      // Call initializeApp only if tables are not yet initialized
+      await initializeApp();
+    }
+    res.status(200).send('Tables are already created!');
   } catch (err) {
     res.status(500).send('Error during table creation: ' + err.message);
   }
 });
 
+// Start the server
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
 
-
-module.exports=app;
+module.exports = app;
