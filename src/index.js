@@ -14,11 +14,6 @@ let tablesInitialized = false;
 
 // Function to initialize the app and create tables (only once at the start)
 const initializeApp = async () => {
-  if (tablesInitialized) {
-    console.log('Tables already created. Skipping initialization.');
-    return;
-  }
-
   try {
     console.log('Initializing the database connection...');
     const pool = await connectToDatabase(); // Get the connection pool
@@ -36,13 +31,22 @@ const initializeApp = async () => {
   }
 };
 
-// Call initializeApp() before starting the server
-initializeApp();
+// Ensure initialization happens before server starts
+initializeApp()
+  .then(() => {
+    // After initialization, start the server
+    const PORT = process.env.PORT || 8080;
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Failed to initialize the app:', err);
+  });
 
 // `/setup` route for checking status (no table creation here)
 app.get('/setup', async (req, res) => {
   try {
-    // Ensure that initialization is completed before responding
     if (tablesInitialized) {
       console.log('Tables are already created.');
       res.status(200).send('Tables are already created!');
@@ -53,12 +57,6 @@ app.get('/setup', async (req, res) => {
   } catch (err) {
     res.status(500).send('Error during table creation: ' + err.message);
   }
-});
-
-// Start the server
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 module.exports = app;
