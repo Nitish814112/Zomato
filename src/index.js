@@ -9,34 +9,42 @@ dotenv.config(); // Load environment variables
 // Middleware to parse JSON requests
 app.use(express.json());
 
-// Flag to track if tables are already initialized (set to true once done)
+// Flag to track if tables are initialized
 let tablesInitialized = false;
 
-// Function to initialize the app (ensure tables are created)
+// Function to initialize the app and create tables
 const initializeApp = async () => {
   try {
+    if (tablesInitialized) {
+      console.log('Tables already created. Skipping initialization.');
+      return;
+    }
+
     console.log('Initializing the database connection...');
     const pool = await connectToDatabase(); // Get the connection pool
 
     console.log('Creating necessary tables...');
-    if (!tablesInitialized) {
-      await initializeTables(pool); // Create all tables
-      tablesInitialized = true; // Set flag to true after initialization
-      console.log('Tables created successfully.');
-    }
+    await initializeTables(pool); // Create all tables
+    tablesInitialized = true; // Mark tables as initialized
 
-    pool.end(); // Close the connection pool after initialization
+    console.log('Tables created successfully.');
+    pool.end(); // Close the pool after initialization
   } catch (err) {
     console.error('Error during initialization:', err.message);
     process.exit(1); // Exit if initialization fails
   }
 };
 
+// Initialize tables only once when the app starts
 initializeApp();
 
-// Set up the root route to handle requests and ensure tables are created when accessed
+// `/setup` route to trigger table creation (if not already done)
 app.get('/setup', async (req, res) => {
   try {
+    if (!tablesInitialized) {
+      // If tables are not initialized yet, initialize them
+      await initializeApp();
+    }
     res.status(200).send('Tables are already created!');
   } catch (err) {
     res.status(500).send('Error during table creation: ' + err.message);
