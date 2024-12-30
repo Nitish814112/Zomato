@@ -18,7 +18,7 @@ const initializeApp = async () => {
     await initializeTables(pool); // Create all tables
 
     console.log('Initialization complete.');
-
+     pool.end();
     // Start the server
     const PORT = process.env.PORT || 8080;
     app.listen(PORT, () => {
