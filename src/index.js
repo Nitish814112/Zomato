@@ -9,6 +9,8 @@ dotenv.config(); // Load environment variables
 // Middleware to parse JSON requests
 app.use(express.json());
 
+// Flag to track if tables are initialized
+let tablesInitialized = false;
 
 // Function to initialize the app and create tables (only once at the start)
 const initializeApp = async () => {
@@ -19,6 +21,7 @@ const initializeApp = async () => {
     console.log('Creating necessary tables...');
     await initializeTables(pool); // Create all tables
 
+    tablesInitialized = true; // Mark tables as initialized
 
     console.log('Tables created successfully.');
     pool.end(); // Close the pool after initialization
@@ -44,8 +47,13 @@ initializeApp()
 // `/setup` route for checking status (no table creation here)
 app.get('/setup', async (req, res) => {
   try {
-   
-    await initializeApp();
+    if (tablesInitialized) {
+      console.log('Tables are already created.');
+      res.status(200).send('Tables are already created!');
+    } else {
+      console.log('Tables are not yet created.');
+      res.status(500).send('Tables are not yet created. Please try again later.');
+    }
   } catch (err) {
     res.status(500).send('Error during table creation: ' + err.message);
   }
