@@ -30,6 +30,15 @@ const initializeApp = async () => {
   }
 };
 
-initializeApp();
+app.get('/', async (req, res) => {
+  try {
+    await initializeApp();
+    res.status(200).send('Tables created successfully!');
+  } catch (err) {
+    res.status(500).send('Error during table creation: ' + err.message);
+  }
+});
+
+
 
 module.exports=app;
