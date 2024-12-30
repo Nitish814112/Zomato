@@ -32,8 +32,10 @@ const initializeApp = async () => {
   }
 };
 
+initializeApp();
+
 // Set up the root route to handle requests and ensure tables are created when accessed
-app.get('/', async (req, res) => {
+app.get('/setup', async (req, res) => {
   try {
     if (!tablesInitialized) {
       // Call initializeApp only if tables are not yet initialized
