@@ -51,6 +51,20 @@ const restaurants =  [
     { "id": 10, "order_date": "2024-12-28 21:00:00", "customer_id": 10, "restaurant_id": 10, "delivery_boy_id": 10, "status": "completed", "total_amount": 22.00, "is_delivery": true, "delivery_status": "delivered" }
   ];
 
+// orderItems dummy data
+  const orderItems = [
+    { "id": 1, "order_id": 1, "item_name": "Pizza", "item_price": 12.99, "quantity": 2, "total_item_amount": 25.98 },
+    { "id": 2, "order_id": 1, "item_name": "Coke", "item_price": 4.00, "quantity": 1, "total_item_amount": 4.00 },
+    { "id": 3, "order_id": 2, "item_name": "Burger", "item_price": 10.00, "quantity": 1, "total_item_amount": 10.00 },
+    { "id": 4, "order_id": 2, "item_name": "Fries", "item_price": 5.00, "quantity": 2, "total_item_amount": 10.00 },
+    { "id": 5, "order_id": 3, "item_name": "Sushi", "item_price": 8.00, "quantity": 5, "total_item_amount": 40.00 },
+    { "id": 6, "order_id": 4, "item_name": "Taco", "item_price": 5.00, "quantity": 2, "total_item_amount": 10.00 },
+    { "id": 7, "order_id": 4, "item_name": "Guacamole", "item_price": 5.00, "quantity": 3, "total_item_amount": 15.00 },
+    { "id": 8, "order_id": 5, "item_name": "Pasta", "item_price": 7.00, "quantity": 3, "total_item_amount": 21.00 },
+    { "id": 9, "order_id": 6, "item_name": "Steak", "item_price": 25.00, "quantity": 2, "total_item_amount": 50.00 },
+    { "id": 10, "order_id": 7, "item_name": "Vegan Burger", "item_price": 7.50, "quantity": 2, "total_item_amount": 15.00 }
+  ];
 
 
-  module.exports={restaurants,customers,deliveryBoys,orders}
+
+  module.exports={restaurants,customers,deliveryBoys,orders,orderItems}
