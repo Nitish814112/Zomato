@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 const connectToDatabase = require('./connection'); // Import the connection logic
 const initializeTables = require('./Tables'); // Import the tables initialization script
 const app = express();
+const deliveryRoutes = require('./routes/api');
+app.use('/api', deliveryRoutes);
 
 dotenv.config(); // Load environment variables
 
