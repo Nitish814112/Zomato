@@ -18,9 +18,10 @@ const initializeApp = async () => {
     const pool = await connectToDatabase();
     console.log('Creating necessary tables...');
     await initializeTables(pool);
-    await main(); // Calling main function after table creation
+    await main(pool); // Calling main function after table creation
     console.log('Tables created successfully.');
     pool.end();
+    console.log('Db connection closed!!');
   } catch (err) {
     console.error('Error during initialization:', err.message);
     process.exit(1); // Exit if initialization fails

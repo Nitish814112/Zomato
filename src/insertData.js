@@ -3,13 +3,11 @@ const connectToDatabase = require('./connection');
 const { isDataAvailableInTable, insertDataIntoTable } = require('./utility');
 
 // Inserting data into tables
-const main=async()=>{
-  let connection;
+const main=async(pool)=>{
+  
 
   try {
-    connection = await connectToDatabase();
-    console.log('Connected to the database.');
-   
+    
     const tables = [
       { name: 'restaurants', data: restaurants, columns: ['id', 'name', 'email', 'phone', 'address'] },
       { name: 'customers', data: customers, columns: ['id', 'name', 'email', 'phone', 'address'] },
@@ -19,21 +17,16 @@ const main=async()=>{
     ];
 
     for (const { name, data, columns } of tables) {
-      if (await isDataAvailableInTable(name)) {
+      if (await isDataAvailableInTable(pool,name)) {
         console.log(`Data already available in ${name} table.`);
       } else {
-        await insertDataIntoTable(connection, name, data, columns);
+        await insertDataIntoTable(pool, name, data, columns);
       }
     }
 
   } catch (error) {
     console.error('Error connecting to the database or inserting data:', error);
-  } finally {
-    if (connection) {
-      await connection.end();
-      console.log('Database connection closed.');
-    }
-  }
+  } 
 }
 
 module.exports=main;
