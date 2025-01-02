@@ -67,6 +67,70 @@ router.post('/:entityName', async (req, res) => {
   }
 });
 
+router.put('/:entityName/:id', async (req, res) => {
+  const { entityName, id } = req.params;
+  let data = req.body;
+
+  // Debug logs
+  console.log('Incoming data:', data);
+
+  // Validate table name
+  if (!validTables.includes(entityName)) {
+    return res.status(400).json({ error: `Invalid table name: ${entityName}` });
+  }
+
+  // Ensure data is an array
+  if (!Array.isArray(data)) {
+    return res.status(400).json({ error: 'Data must be an array of objects for updating.' });
+  }
+
+  // If the array has only one object, process that object
+  if (data.length === 1) {
+    data = data[0]; // Extract the first object
+  }
+
+  // Validate data object
+  if (typeof data !== 'object' || Object.keys(data).length === 0) {
+    return res.status(400).json({
+      error: 'Invalid data format. Expected a JSON object with key-value pairs for updating.',
+    });
+  }
+
+  // Prepare columns and values for the SQL query
+  const updates = Object.keys(data)
+    .map((key) => `\`${key}\` = ?`) // Escape column names with backticks
+    .join(', ');  // Join all the updates with commas
+  const values = Object.values(data);
+
+  // Append the ID to the values array for the WHERE clause
+  values.push(id);
+
+  try {
+    const connection = await connectToDatabase();
+
+    // Construct the SQL query dynamically
+    const query = `UPDATE \`${entityName}\` SET ${updates} WHERE id = ?`;
+
+    console.log('Generated Query:', query);
+    console.log('Values:', values);
+
+    const [result] = await connection.execute(query, values);
+
+    // Close the connection
+    connection.end();
+
+    // Respond based on the result
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: `No record found with id: ${id} in ${entityName}` });
+    }
+
+    res.status(200).json({ message: `Record with id ${id} successfully updated in ${entityName}` });
+  } catch (error) {
+    console.error('Error updating data:', error);
+    res.status(500).json({ error: 'Failed to update data', details: error.message });
+  }
+});
+
 
 router.get('/order-summary', async (req, res) => {
     let { limit , offset} = req.query;
