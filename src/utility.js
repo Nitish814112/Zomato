@@ -1,4 +1,27 @@
+const { restaurants, customers, deliveryBoys, orders, orderItems } = require('./data');
+const connectToDatabase = require('./connection');
 
+const tables = [
+  { name: 'restaurants', data: restaurants, columns: ['id', 'name', 'email', 'phone', 'address'] },
+  { name: 'customers', data: customers, columns: ['id', 'name', 'email', 'phone', 'address'] },
+  { name: 'delivery_boys', data: deliveryBoys, columns: ['id', 'name', 'email', 'phone', 'status'] },
+  { name: 'orders', data: orders, columns: ['id', 'order_date', 'customer_id', 'restaurant_id', 'delivery_boy_id', 'status', 'total_amount', 'is_delivery', 'delivery_status'] },
+  { name: 'order_items', data: orderItems, columns: ['id', 'order_id', 'item_name', 'item_price', 'quantity', 'total_item_amount'] },
+];
+
+
+const executeQuery = async (query, params = []) => {
+  const pool = await connectToDatabase();
+  try {
+    const [rows] = await pool.execute(query, params);
+    return rows;
+  } catch (error) {
+    console.error('Database query failed:', error.message);
+    throw error;
+  } finally {
+    pool.end(); // Close the pool connection
+  }
+};
 
 const isDataAvailableInTable = async (pool,table) => {
   try {
@@ -34,4 +57,6 @@ const insertDataIntoTable = async (pool, tableName, data, columns) => {
 module.exports = {
   isDataAvailableInTable,
   insertDataIntoTable,
+  tables,
+  executeQuery
 };

@@ -1,5 +1,7 @@
 const express = require('express');
+const {executeQuery,insertDataIntoTable}= require('../utility')
 const connectToDatabase = require('../connection');
+
 const {
   orderSummary,
   topRestaurant,
@@ -16,23 +18,54 @@ const {
   getDeliveryBoyDetailsForSpecificOrder,
 } = require('./sqlQuery');
 
-
 const router = express.Router();
 
-// universal function to execute dql query
-const executeQuery = async (query, params = []) => {
-  const pool = await connectToDatabase();
-  try {
-    const [rows] = await pool.execute(query, params);
-    return rows;
-  } catch (error) {
-    console.error('Database query failed:', error.message);
-    throw error;
-  } finally {
-    pool.end(); // Close the pool connection
-  }
-};
+const validTables = ['restaurants', 'customers', 'delivery_boys', 'orders', 'order_items']; // Define valid table names
 
+router.post('/:entityName', async (req, res) => {
+  const { entityName } = req.params;
+  let data = req.body;
+
+  // Debug logs
+  console.log('Incoming data:', data);
+
+  // Validate table name
+  if (!validTables.includes(entityName)) {
+    return res.status(400).json({ error: `Invalid table name: ${entityName}` });
+  }
+
+  // Handle both array and single object input
+  if (!Array.isArray(data)) {
+    data = [data]; // Wrap single object into an array
+  }
+
+  // Validate data array
+  if (data.length === 0 || !data.every((item) => typeof item === 'object')) {
+    return res.status(400).json({ error: 'Invalid data format. Expected JSON objects or an array of JSON objects.' });
+  }
+
+  // Extract columns dynamically from the first object
+  const columns = Object.keys(data[0]);
+  console.log('Columns:', columns);
+
+  if (columns.length === 0) {
+    return res.status(400).json({ error: 'No data provided to insert.' });
+  }
+
+  try {
+    const connection = await connectToDatabase();
+
+    // Insert each item into the table
+    await insertDataIntoTable(connection, entityName, data, columns);
+
+    res.status(201).json({ message: `Data successfully inserted into ${entityName}` });
+
+    connection.end(); // Close the connection
+  } catch (error) {
+    console.error('Error inserting data:', error);
+    res.status(500).json({ error: 'Failed to insert data', details: error.message });
+  }
+});
 
 
 router.get('/order-summary', async (req, res) => {
