@@ -3,14 +3,15 @@ const dotenv = require('dotenv');
 const app = express();
 const deliveryRoutes = require('./routes/api');
 const initializeTables = require('./Tables');
-const main = require('./insertData');
+const {insertDummyData} = require('./insertDummyData');
 const connectToDatabase = require('./connection');
-
+app.use(express.json());
 app.use('/api', deliveryRoutes);
+
 
 dotenv.config(); 
 
-app.use(express.json());
+
 
 const initializeApp = async () => {
   try {
@@ -18,7 +19,7 @@ const initializeApp = async () => {
     const pool = await connectToDatabase();
     console.log('Creating necessary tables...');
     await initializeTables(pool);
-    await main(pool); // Calling main function after table creation
+    await insertDummyData(pool); // Calling main function after table creation
     console.log('Tables created successfully.');
     pool.end();
     console.log('Db connection closed!!');
