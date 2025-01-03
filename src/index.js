@@ -1,17 +1,21 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const app = express();
+
 const deliveryRoutes = require('./routes/api');
 const initializeTables = require('./Tables');
 const {insertDummyData} = require('./insertDummyData');
 const connectToDatabase = require('./connection');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger-output.json');
+
 app.use(express.json());
 app.use('/api', deliveryRoutes);
 
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 dotenv.config(); 
-
-
 
 const initializeApp = async () => {
   try {
