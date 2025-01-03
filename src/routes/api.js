@@ -25,6 +25,7 @@ const validTables = ['restaurants', 'customers', 'delivery_boys', 'orders', 'ord
  * @swagger
  * /{entityName}:
  *   post:
+ *    summary: Insert data into tables(restaurants,customers,orders,delivery_boys,order_items)
  *     description: Insert data into the specified entity (table)
  *     parameters:
  *       - name: entityName
@@ -100,6 +101,7 @@ router.post('/:entityName', async (req, res) => {
  * @swagger
  * /{entityName}/{id}:
  *   put:
+ *   summary: Update data into tables(restaurants,customers,orders,delivery_boys,order_items)
  *     description: Update data for the specified entity (table) by ID
  *     parameters:
  *       - name: entityName
