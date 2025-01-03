@@ -490,7 +490,7 @@ router.get('/total-sales-for-restaurant/:restaurantId', async (req, res) => {
  * @swagger
  * /delivery-boy-status:
  *   get:
- *     summary: Get the status of delivery boys
+ *     summary: Get All delivery boys
  *     description: Retrieves the status of all delivery boys.
  *     responses:
  *       200:
@@ -498,7 +498,7 @@ router.get('/total-sales-for-restaurant/:restaurantId', async (req, res) => {
  *       500:
  *         description: Failed to fetch delivery boy status
  */
-router.get('/delivery-boy-status', async (req, res) => {
+router.get('/delivery-boy', async (req, res) => {
   try {
     const result = await executeQuery(getDeliveryBoyStatus);
     res.json(result);

@@ -107,9 +107,8 @@ WHERE customer_id = ?
 `;
 
 const getDeliveryBoyStatus = `
-SELECT status, COUNT(*) AS total 
+SELECT *  
 FROM delivery_boys 
-GROUP BY status
 `;
 
 const getActiveDeliveryBoys = `
