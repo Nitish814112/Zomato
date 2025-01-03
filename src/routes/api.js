@@ -21,30 +21,59 @@ const {
 const router = express.Router();
 
 const validTables = ['restaurants', 'customers', 'delivery_boys', 'orders', 'order_items']; // Define valid table names
-
+/**
+ * @swagger
+ * /{entityName}:
+ *   post:
+ *     description: Insert data into the specified entity (table)
+ *     parameters:
+ *       - name: entityName
+ *         in: path
+ *         required: true
+ *         type: string
+ *         description: The name of the entity to insert data into
+ *       - name: body
+ *         in: body
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             length:
+ *               type: string
+ *               example: "any"
+ *             every:
+ *               type: string
+ *               example: "any"
+ *     responses:
+ *       201:
+ *         description: Created
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Internal Server Error
+ */
 router.post('/:entityName', async (req, res) => {
   const { entityName } = req.params;
   let data = req.body;
 
-  // Debug logs
+
   console.log('Incoming data:', data);
 
-  // Validate table name
+  // Validating table name
   if (!validTables.includes(entityName)) {
     return res.status(400).json({ error: `Invalid table name: ${entityName}` });
   }
 
-  // Handle both array and single object input
+  
   if (!Array.isArray(data)) {
-    data = [data]; // Wrap single object into an array
+    data = [data]; 
   }
 
   // Validate data array
   if (data.length === 0 || !data.every((item) => typeof item === 'object')) {
-    return res.status(400).json({ error: 'Invalid data format. Expected JSON objects or an array of JSON objects.' });
+    return res.status(400).json({ error: 'Invalid data format. Expected JSON objects ' });
   }
 
-  // Extract columns dynamically from the first object
   const columns = Object.keys(data[0]);
   console.log('Columns:', columns);
 
@@ -67,19 +96,52 @@ router.post('/:entityName', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /{entityName}/{id}:
+ *   put:
+ *     description: Update data for the specified entity (table) by ID
+ *     parameters:
+ *       - name: entityName
+ *         in: path
+ *         required: true
+ *         type: string
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         type: string
+ *       - name: body
+ *         in: body
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             length:
+ *               type: string
+ *               example: "any"
+ *     responses:
+ *       200:
+ *         description: OK
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ *       500:
+ *         description: Internal Server Error
+ */
 router.put('/:entityName/:id', async (req, res) => {
   const { entityName, id } = req.params;
   let data = req.body;
 
-  // Debug logs
+  
   console.log('Incoming data:', data);
 
-  // Validate table name
+  
   if (!validTables.includes(entityName)) {
     return res.status(400).json({ error: `Invalid table name: ${entityName}` });
   }
 
-  // Ensure data is an array
+  
   if (!Array.isArray(data)) {
     return res.status(400).json({ error: 'Data must be an array of objects for updating.' });
   }
@@ -98,17 +160,15 @@ router.put('/:entityName/:id', async (req, res) => {
 
   // Prepare columns and values for the SQL query
   const updates = Object.keys(data)
-    .map((key) => `\`${key}\` = ?`) // Escape column names with backticks
+    .map((key) => `\`${key}\` = ?`) // skip column names with backticks
     .join(', ');  // Join all the updates with commas
   const values = Object.values(data);
 
-  // Append the ID to the values array for the WHERE clause
   values.push(id);
 
   try {
     const connection = await connectToDatabase();
 
-    // Construct the SQL query dynamically
     const query = `UPDATE \`${entityName}\` SET ${updates} WHERE id = ?`;
 
     console.log('Generated Query:', query);
@@ -131,7 +191,33 @@ router.put('/:entityName/:id', async (req, res) => {
   }
 });
 
-
+/**
+ * @swagger
+ * /order-summary:
+ *   get:
+ *     summary: Get order summary
+ *     description: Retrieves the summary of orders with pagination.
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         description: Number of results to return
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *       - in: query
+ *         name: offset
+ *         description: Offset for pagination
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 0
+ *     responses:
+ *       200:
+ *         description: Order summary retrieved successfully
+ *       500:
+ *         description: Failed to fetch order summary
+ */
 router.get('/order-summary', async (req, res) => {
     let { limit , offset} = req.query;
 
@@ -148,8 +234,18 @@ router.get('/order-summary', async (req, res) => {
     }
   });
   
-
-
+  /**
+ * @swagger
+ * /top-restaurants:
+ *   get:
+ *     summary: Get top restaurants
+ *     description: Retrieves the list of top restaurants.
+ *     responses:
+ *       200:
+ *         description: Top restaurants retrieved successfully
+ *       500:
+ *         description: Failed to fetch top restaurants
+ */
 router.get('/top-restaurants', async (req, res) => {
   try {
     const result = await executeQuery(topRestaurant);
@@ -159,6 +255,19 @@ router.get('/top-restaurants', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /busiest-delivery-boy:
+ *   get:
+ *     summary: Get the busiest delivery boy
+ *     description: Retrieves the busiest delivery boy.
+ *     responses:
+ *       200:
+ *         description: Busiest delivery boy retrieved successfully
+ *       500:
+ *         description: Failed to fetch busiest delivery boy
+ */
+
 router.get('/busiest-delivery-boy', async (req, res) => {
   try {
     const result = await executeQuery(getBusiestDelivery_Boy);
@@ -167,7 +276,21 @@ router.get('/busiest-delivery-boy', async (req, res) => {
     res.status(500).send({ error: 'Failed to fetch busiest delivery boy' });
   }
 });
-//
+
+/**
+ * @swagger
+ * /frequent-orders:
+ *   get:
+ *     summary: Get frequent order details
+ *     description: Retrieves the list of frequent orders.
+ *     responses:
+ *       200:
+ *         description: Frequent orders retrieved successfully
+ *       500:
+ *         description: Failed to fetch frequent orders
+ */
+
+
 router.get('/frequent-orders', async (req, res) => {
   try {
     const result = await executeQuery(getfrequentOrderDetails);
@@ -176,6 +299,28 @@ router.get('/frequent-orders', async (req, res) => {
     res.status(500).send({ error: 'Failed to fetch frequent orders' });
   }
 });
+
+/**
+ * @swagger
+ * /specific-order-price/{orderId}:
+ *   get:
+ *     summary: Get specific order price
+ *     description: Retrieves the price for a specific order by its ID.
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         description: The ID of the order
+ *         schema:
+ *           type: integer
+ *           example: 12345
+ *     responses:
+ *       200:
+ *         description: Order price retrieved successfully
+ *       500:
+ *         description: Failed to fetch order price
+ */
+
 
 router.get('/specific-order-price/:orderId', async (req, res) => {
   const { orderId } = req.params;
@@ -187,6 +332,28 @@ router.get('/specific-order-price/:orderId', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /order/{orderId}/delivery-boy:
+ *   get:
+ *     summary: Get delivery boy for a specific order
+ *     description: Retrieves the delivery boy assigned to a specific order by its ID.
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         description: The ID of the order
+ *         schema:
+ *           type: integer
+ *           example: 12345
+ *     responses:
+ *       200:
+ *         description: Delivery boy details retrieved successfully
+ *       500:
+ *         description: Failed to fetch delivery boy details
+ */
+
+
 router.get('/order/:orderId/delivery-boy', async (req, res) => {
     const { orderId } = req.params;
     try {
@@ -196,6 +363,27 @@ router.get('/order/:orderId/delivery-boy', async (req, res) => {
         res.status(500).send({ error: 'Failed to fetch delivery boy details for the order' });
     }
   });
+
+  /**
+ * @swagger
+ * /specific-order-details/{orderId}:
+ *   get:
+ *     summary: Get specific order details
+ *     description: Retrieves details for a specific order by its ID.
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         description: The ID of the order
+ *         schema:
+ *           type: integer
+ *           example: 12345
+ *     responses:
+ *       200:
+ *         description: Order details retrieved successfully
+ *       500:
+ *         description: Failed to fetch order details
+ */
 
 
 
@@ -209,6 +397,20 @@ router.get('/specific-order-details/:orderId', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /out-for-delivery-orders:
+ *   get:
+ *     summary: Get out-for-delivery orders
+ *     description: Retrieves a list of orders that are out for delivery.
+ *     responses:
+ *       200:
+ *         description: Out-for-delivery orders retrieved successfully
+ *       500:
+ *         description: Failed to fetch out-for-delivery orders
+ */
+
+
 router.get('/out-for-delivery-orders', async (req, res) => {
   try {
     const result = await executeQuery(getOutOfDeliveryOrder);
@@ -217,6 +419,28 @@ router.get('/out-for-delivery-orders', async (req, res) => {
     res.status(500).send({ error: 'Failed to fetch out-for-delivery orders' });
   }
 });
+
+/**
+ * @swagger
+ * /delivery-boy-orders/{id}:
+ *   get:
+ *     summary: Get orders assigned to a delivery boy
+ *     description: Retrieves orders assigned to a specific delivery boy by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the delivery boy
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: Orders assigned to delivery boy retrieved successfully
+ *       500:
+ *         description: Failed to fetch delivery boy orders
+ */
+
 
 router.get('/delivery-boy-orders/:id', async (req, res) => {
   const deliveryBoyId = req.params.id;
@@ -228,6 +452,28 @@ router.get('/delivery-boy-orders/:id', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /total-sales-for-restaurant/{restaurantId}:
+ *   get:
+ *     summary: Get total sales for a restaurant
+ *     description: Retrieves total sales for a specific restaurant by its ID.
+ *     parameters:
+ *       - in: path
+ *         name: restaurantId
+ *         required: true
+ *         description: The ID of the restaurant
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: Total sales for restaurant retrieved successfully
+ *       500:
+ *         description: Failed to fetch total sales for restaurant
+ */
+
+
 router.get('/total-sales-for-restaurant/:restaurantId', async (req, res) => {
   const { restaurantId } = req.params;
   try {
@@ -238,6 +484,18 @@ router.get('/total-sales-for-restaurant/:restaurantId', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /delivery-boy-status:
+ *   get:
+ *     summary: Get the status of delivery boys
+ *     description: Retrieves the status of all delivery boys.
+ *     responses:
+ *       200:
+ *         description: Delivery boy status retrieved successfully
+ *       500:
+ *         description: Failed to fetch delivery boy status
+ */
 router.get('/delivery-boy-status', async (req, res) => {
   try {
     const result = await executeQuery(getDeliveryBoyStatus);
@@ -246,6 +504,19 @@ router.get('/delivery-boy-status', async (req, res) => {
     res.status(500).send({ error: 'Failed to fetch delivery boy status' });
   }
 });
+
+/**
+ * @swagger
+ * /active-delivery-boys:
+ *   get:
+ *     summary: Get active delivery boys
+ *     description: Retrieves the list of active delivery boys.
+ *     responses:
+ *       200:
+ *         description: Active delivery boys retrieved successfully
+ *       500:
+ *         description: Failed to fetch active delivery boys
+ */
 
 router.get('/active-delivery-boys', async (req, res) => {
   try {
@@ -256,6 +527,26 @@ router.get('/active-delivery-boys', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /delivery-boy-details-for-order/{orderId}:
+ *   get:
+ *     summary: Get delivery boy details for a specific order
+ *     description: Retrieves details of the delivery boy assigned to a specific order.
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         description: The ID of the order
+ *         schema:
+ *           type: integer
+ *           example: 12345
+ *     responses:
+ *       200:
+ *         description: Delivery boy details for order retrieved successfully
+ *       500:
+ *         description: Failed to fetch delivery boy details for specific order
+ */
 router.get('/delivery-boy-details-for-order/:orderId', async (req, res) => {
   const { orderId } = req.params;
   try {

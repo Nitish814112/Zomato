@@ -1,16 +1,23 @@
-const swaggerAutogen = require('swagger-autogen')();
+const swaggerJSDoc = require('swagger-jsdoc');
+const path = require('path');
 
-
-const doc = {
+// Define Swagger options
+const options = {
+  definition: {
+    swagger: '2.0',
     info: {
-        title: 'My API',
-        description: 'Description',
+      title: 'Zomato API',
+      version: '1.0.0',
+      description: 'API documentation for Zomato delivery system.'
     },
-    host: 'zomato-ugr6.onrender.com/api',
-    schemes:['https'] 
+    host: 'zomato-ugr6.onrender.com/api',  
+    basePath: '/',
+    schemes: ['https'],
+  },
+  apis: [path.join(__dirname, './routes/api.js')] 
 };
 
-const outputFile = './swagger-output.json';
-const routes = ['./src/routes/api.js']; 
+// Initialize swaggerJSDoc
+const swaggerSpec = swaggerJSDoc(options);
 
-swaggerAutogen(outputFile, routes, doc);
+module.exports = { swaggerSpec };
