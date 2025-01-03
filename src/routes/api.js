@@ -488,7 +488,7 @@ router.get('/total-sales-for-restaurant/:restaurantId', async (req, res) => {
 
 /**
  * @swagger
- * /delivery-boy-status:
+ * /delivery-boy:
  *   get:
  *     summary: Get All delivery boys
  *     description: Retrieves the status of all delivery boys.
