@@ -28,7 +28,7 @@ const {
   insertDeliveryBoys,
   loginUser,
   registerUser,
-} = require("./apiCallbacks");
+} = require("../utilities/apiCallbacks");
 
 /**
  * @swagger
