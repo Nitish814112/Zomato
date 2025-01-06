@@ -1,20 +1,28 @@
 const swaggerJSDoc = require('swagger-jsdoc');
 const path = require('path');
 
-// Define Swagger options
+
 const options = {
   definition: {
     swagger: '2.0',
     info: {
       title: 'Zomato API',
       version: '1.0.0',
-      description: 'API documentation for Zomato delivery system.'
+      description: 'API documentation for Zomato delivery system.',
     },
-    host: 'zomato-ugr6.onrender.com/api',  
+    host: 'zomato-ugr6.onrender.com/api',
     basePath: '/',
     schemes: ['https'],
+    securityDefinitions: {
+      BearerAuth: {
+        type: 'apiKey',
+        name: 'Authorization',
+        in: 'header',
+        description: 'Enter your JWT token in the format: Bearer <token>',
+      },
+    },
   },
-  apis: [path.join(__dirname, './routes/api.js')] 
+  apis: [path.join(__dirname, './routes/api.js')], // Path to your route file
 };
 
 // Initialize swaggerJSDoc

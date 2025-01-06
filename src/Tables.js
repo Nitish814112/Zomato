@@ -6,7 +6,17 @@ const deliveryBoysSchema = `
   name VARCHAR(255) NOT NULL,
   phone VARCHAR(15) NOT NULL UNIQUE,
   email VARCHAR(255) UNIQUE,
-  status ENUM('active', 'inactive', 'on_leave') NOT NULL DEFAULT 'active'
+  status ENUM('active', 'inactive', 'on_leave') DEFAULT 'active'
+`;
+
+// UserTable
+
+const UserSchema = `
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL,
+password VARCHAR(255) NOT NULL, 
+role VARCHAR(50) DEFAULT 'user', 
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
 `;
 // Restaurant table schema
 const restaurantSchema=`
@@ -60,7 +70,7 @@ const initializeTables = async (pool) => {
     await initializeTable(pool,'customers',customerSchema);
     await initializeTable(pool,'orders',orderSchema)
     await initializeTable(pool,'order_items',orderItemsSchema)
-   
+    await initializeTable(pool,'user',UserSchema);
     
     console.log('All tables created successfully!');
   } catch (err) {
