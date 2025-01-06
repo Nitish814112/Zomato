@@ -22,7 +22,7 @@ const options = {
       },
     },
   },
-  apis: [path.join(__dirname, './routes/api.js')], 
+  apis: [path.join(__dirname, '../routes/api.js')], 
 };
 
 // Initialize swaggerJSDoc
