@@ -77,9 +77,6 @@ router.get("/order-summary", order_Summary);
  *             name:
  *               type: string
  *               example: "John Doe"
- *             email:
- *               type: string
- *               example: "johndoe@example.com"
  *             password:
  *               type: string
  *               example: "password123"
@@ -115,7 +112,7 @@ router.post('/register-user',registerUser);
  *         schema:
  *           type: object
  *           properties:
- *             email:
+ *             name:
  *               type: string
  *               example: "johndoe@example.com"
  *             password:
