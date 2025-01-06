@@ -1,5 +1,5 @@
-const {executeQuery}= require('../utility')
-const connectToDatabase = require('../connection');
+const {executeQuery}= require('../utilities/utility')
+const connectToDatabase = require('../mysql/connection');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 

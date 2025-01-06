@@ -3,11 +3,11 @@ const dotenv = require('dotenv');
 
 const app = express();
 const swaggerUi = require('swagger-ui-express');
-const { swaggerSpec } = require('./swagger'); //
+const { swaggerSpec } = require('./documentation/swagger'); 
 const deliveryRoutes = require('./routes/api');
-const initializeTables = require('./Tables');
-const {insertDummyData} = require('./insertDummyData');
-const connectToDatabase = require('./connection');
+const initializeTables = require('./mysql/Tables');
+const {insertDummyData} = require('./utilities/insertDummyData');
+const connectToDatabase = require('./mysql/connection');
 dotenv.config(); 
 
 app.use(express.json());

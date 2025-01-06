@@ -1,5 +1,5 @@
 const { restaurants, customers, deliveryBoys, orders, orderItems } = require('./data');
-const connectToDatabase = require('./connection');
+const connectToDatabase = require('../mysql/connection');
 
 const tables = [
   { name: 'restaurants', data: restaurants, columns: ['id', 'name', 'email', 'phone', 'address'] },
