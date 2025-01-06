@@ -800,5 +800,26 @@ router.get("/active-delivery-boys",authenticateToken, getActiveDeliveryBoy);
  */
 router.get("/delivery-boy-details-for-order/:orderId",authenticateToken,getdeliveryboyDetails);
 
+/**
+ * @swagger
+ * /healthcheck:
+ *   get:
+ *     summary: Health check API
+ *     description: Checks if the server is running.
+ *     responses:
+ *       200:
+ *         description: Server is healthy.
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "UP"
+ *               timestamp: "2025-01-06T12:00:00Z"
+ */
+router.get('/healthcheck', (req, res) => {
+  res.status(200).json({
+    status: 'UP',
+    timestamp: new Date().toISOString(),
+  });
+});
 
 module.exports = router;
