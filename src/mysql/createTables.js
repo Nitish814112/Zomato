@@ -1,18 +1,22 @@
 // General function to check if a table exists
 const checkTableExists = async (pool, tableName) => {
   const query = `
-    SELECT COUNT(*) AS count 
-    FROM information_schema.tables 
+    SELECT COUNT(*) AS count
+    FROM information_schema.tables
     WHERE table_schema = ? AND table_name = ?
   `;
   try {
     const [rows] = await pool.query(query, [process.env.DB_NAME || 'zomato', tableName]);
+    if (!Array.isArray(rows) || rows.length === 0) {
+      throw new Error('Invalid response structure from query');
+    }
     return rows[0].count > 0;
   } catch (err) {
     console.error(`Error checking existence of table ${tableName}:`, err.message);
-    throw err;
+    throw err;  // Rethrow the error to be caught in the calling function
   }
 };
+
 
 // General function to create a table with a given schema if it doesn't exist
 const createTable = async (pool, tableName, schema) => {
@@ -44,4 +48,4 @@ const initializeTable = async (pool, tableName, schema) => {
 };
 
 // Export both functions
-module.exports = { createTable, initializeTable };
+module.exports = { createTable, initializeTable,checkTableExists };
